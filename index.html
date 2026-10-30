@@ -1,16 +1,141 @@
-<!DOCTYPE html><html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>آزمایشگاه امنیتی من</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY CYBER LAB</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #050b08;
+  color: #00ff88;
+  font-family: Tahoma, sans-serif;
+  text-align: center;
+}
+
+header {
+  padding: 45px 15px;
+  background: linear-gradient(135deg, #001b10, #000);
+  border-bottom: 2px solid #00ff88;
+}
+
+h1 {
+  font-size: 35px;
+  text-shadow: 0 0 15px #00ff88;
+}
+
+header p {
+  color: #a0ffc9;
+}
+
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 15px;
+}
+
+.card {
+  background: #0b1711;
+  border: 1px solid #00a85a;
+  border-radius: 15px;
+  padding: 22px;
+  margin: 18px 0;
+  box-shadow: 0 0 12px #003d20;
+}
+
+h2 {
+  color: #00ff88;
+}
+
+p {
+  color: #c0d8ca;
+  line-height: 2;
+}
+
+button {
+  background: #00ff88;
+  color: #001b10;
+  border: none;
+  padding: 13px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow: 0 0 18px #00ff88;
+}
+
+#result {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+footer {
+  padding: 25px;
+  color: #668876;
+  border-top: 1px solid #16452c;
+}
+</style>
 </head>
+
 <body>
-  <h1>آزمایشگاه امنیتی من 🔐</h1>
-  <p>این یک صفحهٔ آزمایشی محلی است.</p>
-  <p>این صفحه IP یا اطلاعات شخصی شما را جمع‌آوری نمی‌کند.</p>
-  <button onclick="document.getElementById('result').textContent='دکمه درست کار می‌کند!'">
-    آزمایش دکمه
-  </button>
-  <p id="result"></p>
+
+<header>
+  <h1>MY CYBER LAB 🔐</h1>
+  <p>آزمایشگاه شخصی امنیت سایبری</p>
+  <p>LEARN • EXPLORE • PROTECT</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>🛡️ خوش آمدید</h2>
+    <p>
+      به آزمایشگاه امنیت سایبری من خوش آمدید.
+      اینجا محیطی برای یادگیری امنیت دیجیتال،
+      برنامه‌نویسی و هک اخلاقی است.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>💻 ابزارهای آزمایشگاهی</h2>
+    <p>محیط تمرین HTML و JavaScript</p>
+    <p>آزمایش کدهای برنامه‌نویسی</p>
+    <p>یادگیری اصول امنیت وب</p>
+  </div>
+
+  <div class="card">
+    <h2>📚 آموزش امنیت سایبری</h2>
+    <p>آشنایی با امنیت شبکه</p>
+    <p>مبانی امنیت وب</p>
+    <p>حفاظت از اطلاعات شخصی</p>
+  </div>
+
+  <div class="card">
+    <h2>🧪 تست عملکرد آزمایشگاه</h2>
+    <p>برای آزمایش عملکرد دکمه کلیک کن.</p>
+
+    <button onclick="document.getElementById('result').textContent='سیستم آزمایشگاه فعال است! ✅'">
+      اجرای آزمایش
+    </button>
+
+    <p id="result"></p>
+  </div>
+
+</div>
+
+<footer>
+  MY CYBER LAB © 2026
+  <br>
+  محیط آموزشی امنیت سایبری
+</footer>
+
 </body>
 </html>
