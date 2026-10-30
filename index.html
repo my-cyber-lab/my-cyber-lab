@@ -137,5 +137,168 @@ footer {
   محیط آموزشی امنیت سایبری
 </footer>
 
-</body>
-</html>
+
+
+<section class="card" style="direction:rtl;text-align:center;margin:25px auto;padding:20px;">
+  <h2>🔐 تولید رمز عبور قوی</h2>
+  <p>یک رمز تصادفی و امن بساز</p>
+
+  <label>طول رمز: <span id="passLength">16</span></label>
+  <input type="range" id="length" min="8" max="64" value="16"
+    oninput="document.getElementById('passLength').textContent=this.value">
+
+  <div style="margin:15px;">
+    <label><input type="checkbox" id="upper" checked> حروف بزرگ</label>
+    <label><input type="checkbox" id="lower" checked> حروف کوچک</label>
+    <label><input type="checkbox" id="numbers" checked> اعداد</label>
+    <label><input type="checkbox" id="symbols" checked> نمادها</label>
+  </div>
+
+  <input id="passwordResult" type="text" readonly
+    placeholder="رمز اینجا نمایش داده می‌شود"
+    style="width:90%;padding:12px;text-align:center;">
+
+  <br><br>
+  <button onclick="generatePassword()">تولید رمز 🔄</button>
+  <button onclick="copyPassword()">کپی رمز 📋</button>
+
+  <p id="passwordMessage"></p>
+</section>
+
+<script>
+function generatePassword() {
+  const groups = [];
+  if (document.getElementById("upper").checked) groups.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  if (document.getElementById("lower").checked) groups.push("abcdefghijklmnopqrstuvwxyz");
+  if (document.getElementById("numbers").checked) groups.push("0123456789");
+  if (document.getElementById("symbols").checked) groups.push("!@#$%^&*()-_=+");
+
+  const message = document.getElementById("passwordMessage");
+  if (!groups.length) {
+    message.textContent = "حداقل یک گزینه را انتخاب کن!";
+    return;
+  }
+
+  const chars = groups.join("");
+  const length = Number(document.getElementById("length").value);
+  const limit = Math.floor(4294967296 / chars.length) * chars.length;
+  const randomIndex = () => {
+    const value = new Uint32Array(1);
+    do { crypto.getRandomValues(value); } while (value[0] >= limit);
+    return value[0] % chars.length;
+  };
+
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += chars[randomIndex()];
+  }
+
+  document.getElementById("passwordResult").value = password;
+  message.textContent = "رمز با موفقیت ساخته شد.";
+}
+
+function copyPassword() {
+  const result = document.getElementById("passwordResult");
+  const message = document.getElementById("passwordMessage");
+
+  if (!result.value) {
+    message.textContent = "اول یک رمز تولید کن!";
+    return;
+  }
+
+  result.select();
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(result.value)
+      .then(() => message.textContent = "رمز کپی شد!")
+      .catch(() => message.textContent = "کپی خودکار انجام نشد؛ رمز را دستی کپی کن.");
+  } else {
+    message.textContent = "رمز را انتخاب کن و کپی بزن.";
+  }
+}
+</script>
+
+<section class="card" style="direction:rtl;text-align:center;margin:25px auto;padding:20px;">
+  <h2>🛡️ بررسی لینک مشکوک</h2>
+  <p>لینک موردنظر را وارد کن تا نشانه‌های احتمالی فیشینگ بررسی شود.</p>
+
+  <input id="linkInput" type="url" placeholder="https://example.com"
+    style="width:90%;padding:12px;text-align:center;">
+
+  <br><br>
+  <button onclick="scanLink()">بررسی لینک 🔍</button>
+
+  <div id="linkResult" style="margin-top:20px;text-align:right;"></div>
+</section>
+
+<script>
+function scanLink() {
+  const input = document.getElementById("linkInput").value.trim();
+  const result = document.getElementById("linkResult");
+
+  result.innerHTML = "";
+
+  let url;
+
+  try {
+    url = new URL(input);
+  } catch {
+    result.textContent = "⚠️ آدرس واردشده معتبر نیست.";
+    return;
+  }
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    result.textContent = "⚠️ فقط لینک‌های HTTP و HTTPS مجاز هستند.";
+    return;
+  }
+
+  const warnings = [];
+
+  if (url.protocol !== "https:") {
+    warnings.push("اتصال از HTTPS استفاده نمی‌کند.");
+  }
+
+  if (url.username || url.password) {
+    warnings.push("آدرس شامل اطلاعات ورود است.");
+  }
+
+  if (url.hostname.startsWith("xn--") || url.hostname.includes(".xn--")) {
+    warnings.push("دامنه شامل کاراکترهای تبدیل‌شده (Punycode) است.");
+  }
+
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) {
+    warnings.push("آدرس از IP مستقیم استفاده می‌کند.");
+  }
+
+  if (url.hostname.split(".").length > 4) {
+    warnings.push("دامنه دارای زیردامنه‌های متعدد است.");
+  }
+  const suspiciousWords = ["login", "verify", "account", "password",
+  "secure", "update", "wallet", "bank"
+];
+
+  if (suspiciousWords.some(word =>
+    (url.hostname + url.pathname).toLowerCase().includes(word)
+  )) {
+    warnings.push("آدرس شامل واژه‌هایی است که گاهی در لینک‌های فیشینگ دیده می‌شوند.");
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = warnings.length
+    ? "⚠️ چند نشانه مشکوک پیدا شد:"
+    : "✅ نشانه مشکوک شناخته‌شده‌ای پیدا نشد.";
+
+  result.appendChild(heading);
+
+  warnings.forEach(warning => {
+    const item = document.createElement("p");
+    item.textContent = "• " + warning;
+    result.appendChild(item);
+  });
+
+  const note = document.createElement("p");
+  note.textContent = "توجه: این بررسی قطعی نیست و سالم بودن لینک را تضمین نمی‌کند.";
+  result.appendChild(note);
+}
+</script>
+
+</body></html>
