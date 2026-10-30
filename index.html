@@ -301,4 +301,97 @@ function scanLink() {
 }
 </script>
 
-</body></html>
+<section class="card" style="direction:rtl;text-align:center;margin:25px auto;padding:20px;">
+  <h2>🔐 قدرت‌سنج رمز عبور</h2>
+  <p>رمز عبورت رو وارد کن تا قدرتش بررسی بشه.</p>
+
+  <input
+    id="strengthPassword"
+    type="password"
+    placeholder="رمز عبور را وارد کن"
+    style="width:90%;padding:12px;text-align:center;"
+  >
+
+  <div style="background:#333;height:12px;border-radius:10px;margin:18px 0;">
+    <div id="strengthBar" style="height:12px;width:0%;border-radius:10px;background:#777;"></div>
+  </div>
+
+  <h3 id="strengthText">هنوز رمزی وارد نشده</h3>
+  <p id="strengthAdvice"></p>
+</section>
+
+<script>
+const passwordInput = document.getElementById("strengthPassword");
+const strengthBar = document.getElementById("strengthBar");
+const strengthText = document.getElementById("strengthText");
+const strengthAdvice = document.getElementById("strengthAdvice");
+
+passwordInput.addEventListener("input", function () {
+  const password = passwordInput.value;
+  let score = 0;
+  const warnings = [];
+
+  const commonPasswords = [
+    "123456", "12345678", "password",
+    "qwerty", "admin", "111111"
+  ];
+
+  if (password.length === 0) {
+    strengthBar.style.width = "0%";
+    strengthText.textContent = "هنوز رمزی وارد نشده";
+    strengthAdvice.textContent = "";
+    return;
+  }
+
+  if (password.length >= 8) score++;
+  else warnings.push("رمز باید حداقل ۸ کاراکتر داشته باشد.");
+
+  if (password.length >= 12) score++;
+  else warnings.push("استفاده از رمز ۱۲ کاراکتری یا بیشتر بهتر است.");
+
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+  else warnings.push("از حروف کوچک و بزرگ استفاده کن.");
+
+  if (/[0-9]/.test(password)) score++;
+  else warnings.push("از عدد استفاده کن.");
+
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
+  else warnings.push("استفاده از نمادهایی مثل ! و @ کمک می‌کند.");
+
+  if (commonPasswords.includes(password.toLowerCase())) {
+    score = 0;
+    warnings.push("این رمز بسیار رایج و قابل حدس است.");
+  }
+
+  if (/(.)\1{2,}/.test(password)) {
+    score = Math.max(0, score - 1);
+    warnings.push("یک کاراکتر بیش از حد تکرار شده است.");
+  }
+
+  if (/1234|abcd|qwer/i.test(password)) {
+    score = Math.max(0, score - 1);
+    warnings.push("رمز شامل الگوی قابل حدس است.");
+  }
+
+  const levels = [
+    ["خیلی ضعیف 🔴", "0%", "#ff3333"],
+    ["خیلی ضعیف 🔴", "20%", "#ff3333"],
+    ["ضعیف 🟠", "40%", "#ff8800"],
+    ["متوسط 🟡", "60%", "#ffcc00"],
+    ["قوی 🟢", "80%", "#66cc66"],
+    ["بسیار قوی 💚", "100%", "#00ff88"]
+  ];
+
+  const level = levels[score];
+
+  strengthBar.style.width = level[1];
+  strengthBar.style.background = level[2];
+  strengthText.textContent = level[0];
+
+  strengthAdvice.textContent = warnings.length
+    ? warnings.join(" ")
+    : "نشانه‌های بررسی‌شده مناسب هستند؛ از رمزهای تکراری در سایت‌های مختلف استفاده نکن.";
+});
+</script>
+</body>
+</html>
